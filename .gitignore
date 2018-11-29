@@ -1,0 +1,17 @@
+venv/*
+*.swp
+*.swa
+*.pyc
+.idea
+package-lock.json
+static/data/*
+node_modules/*
+db_repository/*
+app.db
+static/build/js/script.js
+static/build/css/style.css
+static/result/*
+migrations/*
+*.lock
+__pycache__/*
+data/*
