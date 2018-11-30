@@ -1,9 +1,9 @@
 {
-  "name": "minmaxheap",
+  "name": "minmaxheaps",
   "version": "1.0.0",
   "description": "Min-Max heap implementation (generalized priority queues)",
   "main": "dist/index.js",
-  "browser": "dist/minmaxheap.min.js",
+  "browser": "dist/minmaxheaps.min.js",
   "directories": {
     "test": "tests"
   },
