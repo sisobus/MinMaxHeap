@@ -109,29 +109,27 @@ export class MinMaxHeap {
     }
   }
   _getMinChild (idx, isMaxLevel) {
-    let [mval, midx] = [this._heap[idx], idx];
-    if (!this.hasChild(idx)) return [mval, midx];
-    [mval, midx] = [this._heap[Utils.child(idx)], Utils.child(idx)];
+    let midx = idx;
+    if (!this.hasChild(idx)) return midx;
     const left = Utils.child(idx);
     for (let i = 0; i < 2 && left + i < this._size; i++) {
       if (this.comparator(this._heap[left + i], this._heap[midx]) ^ isMaxLevel) {
-        [mval, midx] = [this._heap[left + i], left + i];
+        midx = left + i;
       }
     }
-    const grandLeft = Utils.grandChild(idx);
+    const grandLeft = Utils.child(left);
     for (let i = 0; i < 4 && grandLeft + i < this._size; i++) {
       if (this.comparator(this._heap[grandLeft + i], this._heap[midx]) ^ isMaxLevel) {
-        [mval, midx] = [this._heap[grandLeft + i], grandLeft + i];
+        midx = grandLeft + i;
       }
     }
-    return [mval, midx];
+    return midx;
   }
   _trickleDown (idx, isMaxLevel) {
     if (idx >= this._size) return;
-    if (!this.hasChild(idx)) return;
 
     const child = Utils.child(idx);
-    const [mval, midx] = this._getMinChild(idx, isMaxLevel);
+    const midx = this._getMinChild(idx, isMaxLevel);
     if (midx === idx) return;
     this.swap(midx, idx);
 
@@ -139,14 +137,14 @@ export class MinMaxHeap {
       if (this.comparator(this._heap[Utils.parent(midx)], this._heap[midx]) ^ isMaxLevel) {
         this.swap(Utils.parent(midx), midx);
       }
-      _trickleDown(midx, isMaxLevel);
+      this._trickleDown(midx, isMaxLevel);
     }
   }
   trickleDown (idx) {
     if (this.isMinLevel(idx)) {
-      _trickleDown(idx, false);
+      this._trickleDown(idx, false);
     } else {
-      _trickleDown(idx, true);
+      this._trickleDown(idx, true);
     }
   }
   getMinIndex() {
@@ -165,6 +163,27 @@ export class MinMaxHeap {
     this._data.push(data);
     this._size += 1;
   }
+  remove (idx) {
+    if (idx >= this._size) {
+      return null;
+    }
+    let [ridx, rval] = [null, null];
+    if (idx === this._size - 1) {
+      [ridx, rval] = [this._heap.pop(), this._data.pop()];
+      this._size -= 1;
+      if (this.hasData) {
+        return [ridx, rval];
+      } else {
+        return ridx;
+      }
+    }
+
+    this.swap(idx, this._size - 1);
+    [ridx, rval] = [this._heap.pop(), this._data.pop()];
+    this._size -= 1;
+
+    this.trickleDown(idx);
+  }
   push (idx, data = null) {
     this.add(idx, data);
     this.bubbleUp(this._size - 1);
@@ -181,5 +200,40 @@ export class MinMaxHeap {
     }
     const idx = this.getMinIndex();
     return this.hasData ? [this._heap[idx], this._data[idx]] : this._heap[idx];
+  }
+  popMin () {
+    if (this.empty()) {
+      return null;
+    }
+    const idx = this.getMinIndex();
+    let [ridx, rval] = [this._heap[idx], this._data[idx]];
+    this.remove(idx);
+
+    if (this.hasData) {
+      return [ridx, rval];
+    } else {
+      return ridx;
+    }
+  }
+  popMax () {
+    if (this.empty()) {
+      return null;
+    }
+    const idx = 0;
+    let [ridx, rval] = [this._heap[idx], this._data[idx]];
+    this.remove(idx);
+
+    if (this.hasData) {
+      return [ridx, rval];
+    } else {
+      return ridx;
+    }
+  }
+  pop (isMax = true) {
+    if (isMax) {
+      return this.popMax();
+    } else {
+      return this.popMin();
+    }
   }
 }

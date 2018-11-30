@@ -9,7 +9,7 @@ export default [
     output: {
       file: pkg.main,
       format: "cjs",
-      name: "splaytree"
+      name: "minmaxheap"
     },
     plugins: [
       eslint(),
@@ -22,7 +22,7 @@ export default [
     output: {
       file: pkg.browser,
       format: "iife",
-      name: "splaytree"
+      name: "minmaxheap"
     },
     plugins: [
       eslint(),
