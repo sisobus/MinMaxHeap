@@ -7,4 +7,4 @@ env:
     - BUILD_TIMEOUT=10000
 
 install:
-  - npm install
+  - npm install --save-dev
