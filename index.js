@@ -21,12 +21,14 @@ class Utils {
     const t = a;
     a = b;
     b = t;
+    return [b, a];
   }
 }
 export class MinMaxHeap {
-  constructor (duplicate = true, comparator = (a, b) => a < b ? true : false) {
+  constructor (hasData = false, duplicate = true, comparator = (a, b) => a < b ? true : false) {
     this.comparator = comparator;
     this.duplicate = duplicate;
+    this.hasData = hasData;
     this._heap = [];
     this._data = [];
     this._size = 0;
@@ -48,9 +50,11 @@ export class MinMaxHeap {
     return this._size === 0;
   }
   hasParent (idx) {
+    if (idx === 0) return false;
     return Utils.parent(idx) >= 0;
   }
   hasGrandParent (idx) {
+    if (!this.hasParent(idx)) return false;
     return Utils.grandParent(idx) >= 0;
   }
   hasChild (idx) {
@@ -72,14 +76,14 @@ export class MinMaxHeap {
     return !this.isMinLevel(idx);
   }
   swap (idx1, idx2) {
-    Utils.swap(this._heap[idx1], this._heap[idx2]);
-    Utils.swap(this._data[idx1], this._data[idx2]);
+    [this._heap[idx1], this._heap[idx2]] = [this._heap[idx2], this._heap[idx1]];
+    [this._data[idx1], this._data[idx2]] = [this._data[idx2], this._data[idx1]];
   }
   _bubbleUp (idx, isMaxLevel) {
     if (idx === 0) return;
-    if (!this.hasGrandParent(idx)) return;
-
-    const gp = Utils.grandParent(idx);
+    const p = Utils.parent(idx);
+    if (p === 0) return;
+    const gp = Utils.parent(p);
     if (this.comparator(this._heap[idx], this._heap[gp]) ^ isMaxLevel) {
       this.swap(idx, gp);
       this._bubbleUp (gp, isMaxLevel);
@@ -169,16 +173,13 @@ export class MinMaxHeap {
     if (this.empty()) {
       return null;
     }
-    return [this._heap[0], this._data[0]];
+    return this.hasData ? [this._heap[0], this._data[0]] : this._heap[0];
   }
   min () {
     if (this.empty()) {
       return null;
     }
     const idx = this.getMinIndex();
-    return [this._heap[idx], this._data[idx]];
-  }
-  keys () {
-    return this._heap;
+    return this.hasData ? [this._heap[idx], this._data[idx]] : this._heap[idx];
   }
 }
