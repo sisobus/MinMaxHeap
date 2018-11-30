@@ -7,4 +7,5 @@ env:
     - BUILD_TIMEOUT=10000
 
 install:
+  - npm install mocha
   - npm install --save-dev
